@@ -17,6 +17,20 @@ def find_intersection(triangle, vector):
     intersection_point = vector * t
     return intersection_point
 
+def is_inside_triangle(point, triangle):
+    v0, v1, v2 = triangle
+    u = v1 - v0
+    v = v2 - v0
+    n = np.cross(u, v)
+    w = point - v0
+    alpha = np.dot(u, u) * np.dot(w, v) - np.dot(u, v) * np.dot(w, u)
+    beta = np.dot(u, u) * np.dot(w, v) - np.dot(u, v) * np.dot(w, v)
+    gamma = np.dot(u, v) * np.dot(w, u) - np.dot(v, v) * np.dot(w, v)
+    alpha /= np.dot(n, n)
+    beta /= np.dot(n, n)
+    gamma /= np.dot(n, n)
+    return 0 <= alpha <= 1 and 0 <= beta <= 1 and 0 <= gamma <= 1
+
 
 def rotate_vector(vector, axis, angle):
     angle_rad = math.radians(angle)
@@ -38,7 +52,7 @@ for angle_degrees in range(361):  # Углы от 0 до 360 градусов
 
     for triangle in triangles:
         intersection = find_intersection(triangle, rotating_vector)
-        if intersection is not None:
+        if intersection is not None and is_inside_triangle(intersection,triangle):
             intersection_points.append(intersection)
 
     all_intersection_points.append((angle_degrees, intersection_points))
@@ -50,3 +64,5 @@ for angle_degrees in range(361):  # Углы от 0 до 360 градусов
     rotating_vector[2] += step_height
 
 # all_intersection_points содержит список точек пересечения для каждого угла и вектор, который поворачивается и поднимается по оси поворота.
+
+
