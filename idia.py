@@ -1,8 +1,36 @@
-﻿from stl import mesh
+﻿import math
+from stl import mesh
 import numpy as np
-import math
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
-your_mesh = mesh.Mesh.from_file('your_model.stl')
+
+your_mesh = mesh.Mesh.from_file('cone_ascii.stl')
+#your_mesh = mesh.Mesh.from_file('cone_ascii.stl')
+#your_mesh.normals = mesh.Mesh.normals
+
+min_x, min_y, min_z = np.min(your_mesh.v0, axis=0)
+max_x, max_y, max_z = np.max(your_mesh.v0, axis=0)
+
+range_x = max_x - min_x
+range_y = max_y - min_y
+range_z = max_z - min_z
+
+for i in range(len(your_mesh.v0)):
+    your_mesh.v0[i][0] = (your_mesh.v0[i][0] - min_x) / range_x
+    your_mesh.v0[i][1] = (your_mesh.v0[i][1] - min_y) / range_y
+    your_mesh.v0[i][2] = (your_mesh.v0[i][2] - min_z) / range_z
+
+for i in range(len(your_mesh.v1)):
+    your_mesh.v1[i][0] = (your_mesh.v1[i][0] - min_x) / range_x
+    your_mesh.v1[i][1] = (your_mesh.v1[i][1] - min_y) / range_y
+    your_mesh.v1[i][2] = (your_mesh.v1[i][2] - min_z) / range_z
+
+for i in range(len(your_mesh.v2)):
+    your_mesh.v2[i][0] = (your_mesh.v2[i][0] - min_x) / range_x
+    your_mesh.v2[i][1] = (your_mesh.v2[i][1] - min_y) / range_y
+    your_mesh.v2[i][2] = (your_mesh.v2[i][2] - min_z) / range_z
+
 
 triangles = your_mesh.vectors
 
@@ -44,10 +72,10 @@ def rotate_vector(vector, axis, angle):
     return np.dot(rotation_matrix, vector)
 
 all_intersection_points = []
-rotating_vector = np.array([1.0, 0.0, 0.0])  # Исходный вектор, который будет вращаться
-step_height = 0.0  # Высота подъема по оси поворота
+rotating_vector = np.array([1.0, 0.0, 0.0])  
+step_height = 0.0  
 
-for angle_degrees in range(361):  # Углы от 0 до 360 градусов
+for angle_degrees in range(361):  
     intersection_points = []
 
     for triangle in triangles:
@@ -59,10 +87,27 @@ for angle_degrees in range(361):  # Углы от 0 до 360 градусов
 
     if angle_degrees % 360 == 0:
         step_height += 1.0
-    rotating_vector = rotate_vector(rotating_vector, [0, 0, 1], 1)  # Поворачиваем на 1 градус по оси Z
+    rotating_vector = rotate_vector(rotating_vector, [0, 0, 1], 1) 
 
     rotating_vector[2] += step_height
 
-# all_intersection_points содержит список точек пересечения для каждого угла и вектор, который поворачивается и поднимается по оси поворота.
+
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+for angle, intersection_points in all_intersection_points:
+    if intersection_points:
+        intersection_points = np.array(intersection_points)
+        ax.scatter(intersection_points[:, 0], intersection_points[:, 1], intersection_points[:, 2], label=f'Angle {angle}°')
+
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+ax.legend()
+
+plt.show()
+
+
 
 
