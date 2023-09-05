@@ -10,6 +10,11 @@ mesh = "*"
 numpy-stl = "*"
 matplotlib = "*"
 scipy = "*"
+pyqt5 = "*"
+vtk = "*"
+wxpython = "*"
+swig = "*"
+setuptools = "*"
 
 [dev-packages]
 

@@ -4,7 +4,8 @@ from scipy.spatial import ConvexHull
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-your_mesh = mesh.Mesh.from_file('Models\siege.stl')
+#your_mesh = mesh.Mesh.from_file('Models\siege.stl')
+your_mesh = mesh.Mesh.from_file('cone_ascii.stl')
 center_of_mass = your_mesh.points.mean(axis=0)
 vertices = your_mesh.points
 hull = ConvexHull(vertices)
